@@ -1,15 +1,13 @@
 import json
 
-def annotate_texts(data, nlp, extractor) :
+def annotate_texts(data, nlp, extractor):
     annotated = []
     for entry in data:
         text = entry.get("text", "")
         entities = extractor(text, nlp)
-        annotated.append({
-            "original": text,
-            "entities": entities
-        })
+        annotated.append((text, {"entities": [(e["start"], e["end"], e["label"]) for e in entities]}))
     return annotated
+
 
 def save_output(annotated, path="output/annotated_output.json"):
     with open(path, "w", encoding="utf-8") as f:

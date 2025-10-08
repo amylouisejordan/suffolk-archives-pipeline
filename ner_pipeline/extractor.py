@@ -8,4 +8,4 @@ def load_nlp():
 
 def extract_entities(text, nlp):
     doc = nlp(text)
-    return [(ent.text, ent.label_) for ent in doc.ents]
+    return [{"start": ent.start_char, "end": ent.end_char, "label": ent.label_} for ent in doc.ents]
