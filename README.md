@@ -3,13 +3,20 @@
 
 # 🗺️ Suffolk Archives NER Pipeline
 
+![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
+![F-score](https://img.shields.io/badge/F--score-97%25-success)
+![Module](https://img.shields.io/badge/Module-Information_Engineering-purple)
+
 This project was developed for my **Information Engineering module** at university. It implements a Named Entity Recognition (NER) pipeline to automatically identify key historical references in digitised map and document collections from **Suffolk Archives**. The goal is to enrich metadata and improve public access to archival content through semantic analysis.
 
 ---
 
 ## ⚙️ How It's Made
 
-**Tech used:** Python 🐍, spaCy 🤖, Doccano 📝, JSONL 📄
+![Python](https://img.shields.io/badge/Python-3.10-blue?logo=python)
+![spaCy](https://img.shields.io/badge/spaCy-NLP-green?logo=spacy)
+![Doccano](https://img.shields.io/badge/Doccano-Annotation-orange?logo=data:image/svg+xml;base64,...)
+![JSONL](https://img.shields.io/badge/Data-JSONL-lightgrey)
 
 This pipeline is built around spaCy’s NER capabilities. I began by annotating historical map text using Doccano and exported the data in `.jsonl` format. I wrote a conversion script to transform these annotations into spaCy’s binary format (`.spacy`), split the data into training and dev sets, and trained a custom NER model using spaCy’s CLI and configuration system.
 
