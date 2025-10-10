@@ -28,7 +28,7 @@ def split_data(data, train_ratio=0.8):
     return data[:split], data[split:]
 
 if __name__ == "__main__":
-    with open("data/admin.jsonl", "r", encoding="utf-8") as f:
+    with open("data/labelled.jsonl", "r", encoding="utf-8") as f:
         data = [json.loads(line) for line in f if line.strip()]
 
     train_data, dev_data = split_data(data)

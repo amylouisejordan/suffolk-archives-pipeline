@@ -1,6 +1,5 @@
 ![Suffolk Archives Banner](./assets/banner.png)
 
-
 # 🗺️ Suffolk Archives NER Pipeline
 
 ![Status](https://img.shields.io/badge/Status-In_Progress-yellow)
@@ -36,14 +35,9 @@ Follow these steps to set up and run the NER pipeline locally:
 pip install -r requirements.txt
 ```
 
-Or manually:
-
-```bash
-pip install spacy tqdm
-```
-
 ### 2️. Convert annotated data
-Make sure your annotated .jsonl file (e.g. admin.jsonl) is in the `data/` folder.
+
+Make sure your annotated .jsonl file (e.g. labelled.jsonl) is in the `data/` folder.
 
 ```bash
 python convert.py
@@ -53,6 +47,7 @@ This will generate:
 `train.spacy` and `dev.spacy`
 
 ### 3️. Train the model
+
 ```bash
 python -m spacy train config.cfg --output ./model \
   --paths.train ./train.spacy \

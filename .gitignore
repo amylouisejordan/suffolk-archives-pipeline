@@ -11,7 +11,7 @@ model/
 output/
 *.spacy
 
-data/admin.jsonl
+data/labelled.jsonl
 *.jsonl
 
 *.log
