@@ -18,3 +18,7 @@ data/labelled.jsonl
 *.ckpt
 
 .ipynb_checkpoints/
+
+ui/node_modules
+api/node_modules
+ner_pipeline/__pycache__
