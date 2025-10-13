@@ -1,37 +1,61 @@
 import React from "react";
 
 const labelColors = {
-  ORG: "#d97706",
-  DATE: "#2563eb",
-  GPE: "#059669",
-  PERSON: "#db2777",
-  EVENT: "#7c3aed",
-  FACILITY: "#f43f5e",
-  DEFAULT: "#6b7280",
+  ORG: "#a67c52",
+  DATE: "#6b4226",
+  GPE: "#7f674c",
+  PERSON: "#8b5e3c",
+  EVENT: "#5c4b3b",
+  FACILITY: "#9c6644",
+  DEFAULT: "#4b3f2f",
 };
 
 const FacilityPopup = ({ facility, entities }) => {
   return (
-    <div style={{ minWidth: "250px", maxWidth: "400px" }}>
-      <strong>{facility.text}</strong>
-      <details style={{ marginTop: "0.5rem" }}>
-        <summary style={{ cursor: "pointer", fontWeight: "bold" }}>View all entities</summary>
+    <div
+      style={{
+        minWidth: "250px",
+        maxWidth: "400px",
+        backgroundColor: "#fffaf0",
+        border: "1px solid #c2b280",
+        padding: "1rem",
+        borderRadius: "6px",
+        fontFamily: "Georgia, serif",
+        color: "#3e3e3e",
+      }}
+    >
+      <h3 style={{ margin: 0, fontSize: "1.1rem", color: "#5c4b3b" }}>
+        🏛️ <em>{facility.text}</em>
+      </h3>
+      <details style={{ marginTop: "0.75rem" }}>
+        <summary
+          style={{
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "0.95rem",
+            color: "#6b4226",
+          }}
+        >
+          Reveal associated entities
+        </summary>
         <ul style={{ listStyle: "none", paddingLeft: 0, marginTop: "0.5rem" }}>
           {entities.map((ent, j) => {
             const color = labelColors[ent.label] || labelColors.DEFAULT;
             return (
-              <li key={j} style={{ marginBottom: "0.3rem" }}>
+              <li key={j} style={{ marginBottom: "0.4rem" }}>
                 <span
                   style={{
                     backgroundColor: color,
-                    color: "white",
-                    padding: "0.2rem 0.5rem",
+                    color: "#fdf6e3",
+                    padding: "0.25rem 0.6rem",
                     borderRadius: "4px",
                     fontSize: "0.8rem",
-                    marginRight: "0.4rem",
+                    fontFamily: "Georgia, serif",
+                    marginRight: "0.5rem",
                     display: "inline-block",
-                    minWidth: "50px",
+                    minWidth: "60px",
                     textAlign: "center",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
                   }}
                 >
                   {ent.label}
@@ -44,6 +68,6 @@ const FacilityPopup = ({ facility, entities }) => {
       </details>
     </div>
   );
-}
+};
 
 export default FacilityPopup;

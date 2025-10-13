@@ -46,17 +46,61 @@ const App = () => {
       setFacilityPins(geocoded.filter(Boolean));
     } catch (err) {
       console.error("Annotation failed:", err);
-      setError("Failed to annotate. Is the backend running?");
+      setError("Annotation unsuccessful. Please ensure the archival engine is active.");
     }
   };
 
   return (
-    <main className="App" style={{ padding: "2rem", maxWidth: "900px", margin: "auto" }}>
-      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>🗂 Suffolk Archives NER Explorer</h1>
-      <TextInput text={text} setText={setText} handleSubmit={handleSubmit} error={error} />
+    <main
+      className="App"
+      style={{
+        padding: "2rem",
+        maxWidth: "900px",
+        margin: "auto",
+        fontFamily: "Georgia, serif",
+        backgroundColor: "#fffaf0",
+        color: "#3e3e3e",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: "2rem",
+          marginBottom: "1rem",
+          color: "#5c4b3b",
+          borderBottom: "2px solid #c2b280",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        📜 Suffolk Archival Entity Explorer
+      </h1>
+
+      <TextInput
+        text={text}
+        setText={setText}
+        handleSubmit={handleSubmit}
+        error={error}
+      />
+
       <FacilityMap facilityPins={facilityPins} entities={entities} />
+
+      <footer
+        style={{
+          marginTop: "2rem",
+          paddingTop: "1rem",
+          borderTop: "1px solid #c2b280",
+          fontStyle: "italic",
+          fontFamily: "Georgia, serif",
+          color: "#5c4b3b",
+        }}
+      >
+        “History is who we are and why we are the way we are.” - David McCullough
+        <br />
+        <span style={{ fontSize: "0.9rem" }}>
+          Source: Suffolk Archives, Historical Records Collection
+        </span>
+      </footer>
     </main>
   );
-}
+};
 
 export default App;
