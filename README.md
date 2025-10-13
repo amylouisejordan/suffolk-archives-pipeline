@@ -6,8 +6,9 @@
 ![F-score](https://img.shields.io/badge/F--score-97%25-success)
 ![Module](https://img.shields.io/badge/Module-Information_Engineering-purple)
 
-This project was developed for my **Information Engineering module** at university. It implements a Named Entity Recognition (NER) pipeline to automatically identify key historical references in digitised map and document collections from **Suffolk Archives**. The goal is to enrich metadata and improve public access to archival content through semantic analysis.
+This project was developed for my **Information Engineering module** at university. It implements a Named Entity Recognition (NER) pipeline to automatically identify historically significant references in digitised map and document collections from **Suffolk Archives**. The goal is to enrich metadata and improve public access to archival content through semantic analysis and geospatial mapping.
 
+The system includes a user interface with space to upload historical excerpts, view annotated entities, and explore geocoded facilities on an interactive map.
 ---
 
 ## ⚙️ How It's Made
@@ -16,12 +17,23 @@ This project was developed for my **Information Engineering module** at universi
 ![spaCy](https://img.shields.io/badge/spaCy-NLP-green?logo=spacy)
 ![Doccano](https://img.shields.io/badge/Doccano-Annotation-orange?logo=data:image/svg+xml;base64,...)
 ![JSONL](https://img.shields.io/badge/Data-JSONL-lightgrey)
+![React](https://img.shields.io/badge/React-Frontend-blue?logo=react)
+![Leaflet](https://img.shields.io/badge/Leaflet-Map-green?logo=leaflet)
 
-This pipeline is built around spaCy’s NER capabilities. I began by annotating historical map text using Doccano and exported the data in `.jsonl` format. I wrote a conversion script to transform these annotations into spaCy’s binary format (`.spacy`), split the data into training and dev sets, and trained a custom NER model using spaCy’s CLI and configuration system.
+The backend pipeline is built around **spaCy’s NER capabilities**. Historical map excerpts were annotated using **Doccano**, exported in `.jsonl` format, and converted into spaCy’s binary format (`.spacy`). The data was split into training and development sets, and a custom model was trained using spaCy’s configuration system.
 
-The model was trained to recognize seven historically relevant entity types: `MAP`, `DATE`, `PERSON`, `ORG`, `FACILITY`, `EVENT`, `GPE`
+The model recognizes seven historically relevant entity types:
 
-It achieved a **97–98% F-score** on real Suffolk map entries. The workflow supports batch processing, automation, and reproducibility.
+ `MAP`, `DATE`, `PERSON`, `ORG`, `FACILITY`, `EVENT`, `GPE`
+
+
+It achieved a **97–98% F-score** on real Suffolk map entries. The workflow supports batch processing, automation, and reproducibility — making it suitable for large-scale archival enrichment.
+
+The frontend complements this pipeline by offering:
+- A styled `TextInput` component for entering historical text
+- Real-time annotation via Axios and the trained model
+- A `FacilityMap` component that geocodes and displays recognized facilities using Leaflet
+- Accessible UI with modular React architecture and archival-themed design
 
 ---
 
@@ -54,7 +66,7 @@ python -m spacy train config.cfg --output ./model \
   --paths.dev ./dev.spacy
 ```
 
-### 4️. Test the Model
+### OPTIONAL. Test the Model
 
 Use the trained model to extract entities from new text using the interactive Python terminal or a script. For example:
 
@@ -65,3 +77,15 @@ doc = nlp("Extract from OS Provisional Map 1947, surveyed near Sudbury in 1911. 
 for ent in doc.ents:
     print(ent.text, ent.label_)
 ```
+
+## 🖼️ Frontend Setup
+The React interface is located in the `ui/` folder. It includes components for text input, entity display, and facility mapping.
+
+To run the frontend locally:
+```bash
+cd ui
+npm install
+npm start
+```
+
+> Ensure the backend is running on localhost:5050 to enable annotation and geocoding.
