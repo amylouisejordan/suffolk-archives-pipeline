@@ -10,8 +10,21 @@ const facilityIcon = new L.Icon({
   popupAnchor: [0, -36],
 });
 
-const FacilityMap = ({ facilityPins, entities, handlePin }) => {
-  if (facilityPins.length === 0) return null;
+const FacilityMap = ({
+  facilityPins,
+  entities,
+  handlePin,
+  pinnedFacilities,
+}) => {
+  const allPins = [...facilityPins, ...pinnedFacilities];
+
+  if (allPins.length === 0) {
+    return (
+      <p style={{ fontStyle: "italic", color: "#5c4b3b" }}>
+        No geocoded facilities found. Try a different passage or check spelling.
+      </p>
+    );
+  }
 
   return (
     <>
@@ -40,7 +53,7 @@ const FacilityMap = ({ facilityPins, entities, handlePin }) => {
           attribution="Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap."
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {facilityPins.map((e, i) => (
+        {allPins.map((e, i) => (
           <Marker key={i} position={[e.lat, e.lng]} icon={facilityIcon}>
             <Popup>
               <FacilityPopup

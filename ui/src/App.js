@@ -64,7 +64,7 @@ const App = () => {
   const handlePin = (facility) => {
     setPinnedFacilities((prev) => {
       const alreadyPinned = prev.some((f) => f.text === facility.text);
-      return alreadyPinned ? prev : [...prev, facility];
+      return alreadyPinned ? prev : [...prev, { ...facility, visible: true }];
     });
   };
 
@@ -103,40 +103,62 @@ const App = () => {
         facilityPins={facilityPins}
         entities={entities}
         handlePin={handlePin}
+        pinnedFacilities={pinnedFacilities.filter((f) => f.visible)}
       />
 
-      {pinnedFacilities.length > 0 && (
-        <section style={{ marginTop: "2rem" }}>
-          <h2
+      <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+        {pinnedFacilities.map((f, i) => (
+          <li
+            key={i}
             style={{
-              fontSize: "1.5rem",
-              marginBottom: "1rem",
+              marginBottom: "0.5rem",
+              backgroundColor: "#fffaf0",
+              border: "1px solid #c2b280",
+              padding: "0.75rem",
+              borderRadius: "6px",
               fontFamily: "Georgia, serif",
-              color: "#5c4b3b",
+              color: "#3e3e3e",
             }}
           >
-            📍 Pinned Facilities for Comparison
-          </h2>
-          <ul style={{ listStyle: "none", paddingLeft: 0 }}>
-            {pinnedFacilities.map((f, i) => (
-              <li
-                key={i}
+            <strong>{f.text}</strong> - {f.label}
+            <div style={{ marginTop: "0.5rem" }}>
+              <label style={{ marginRight: "1rem" }}>
+                <input
+                  type="checkbox"
+                  checked={f.visible}
+                  onChange={() =>
+                    setPinnedFacilities((prev) =>
+                      prev.map((p) =>
+                        p.text === f.text ? { ...p, visible: !p.visible } : p
+                      )
+                    )
+                  }
+                />
+                Show on map
+              </label>
+              <button
+                onClick={() =>
+                  setPinnedFacilities((prev) =>
+                    prev.filter((p) => p.text !== f.text)
+                  )
+                }
                 style={{
-                  marginBottom: "0.5rem",
-                  backgroundColor: "#fffaf0",
-                  border: "1px solid #c2b280",
-                  padding: "0.75rem",
-                  borderRadius: "6px",
+                  backgroundColor: "#c2b280",
+                  border: "none",
+                  padding: "0.3rem 0.6rem",
+                  borderRadius: "4px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
                   fontFamily: "Georgia, serif",
                   color: "#3e3e3e",
                 }}
               >
-                <strong>{f.text}</strong> — {f.label}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+                ❌ Unpin
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
 
       <footer
         style={{
