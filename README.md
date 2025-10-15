@@ -88,4 +88,4 @@ npm install
 npm start
 ```
 
-> Ensure the backend is running on localhost:5050 to enable annotation and geocoding.
+> Ensure the backend is running (`node api/server.js`) on localhost:5050 to enable annotation and geocoding.

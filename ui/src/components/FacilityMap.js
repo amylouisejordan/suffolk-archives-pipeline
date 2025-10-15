@@ -10,7 +10,7 @@ const facilityIcon = new L.Icon({
   popupAnchor: [0, -36],
 });
 
-const FacilityMap = ({ facilityPins, entities }) => {
+const FacilityMap = ({ facilityPins, entities, handlePin }) => {
   if (facilityPins.length === 0) return null;
 
   return (
@@ -43,7 +43,11 @@ const FacilityMap = ({ facilityPins, entities }) => {
         {facilityPins.map((e, i) => (
           <Marker key={i} position={[e.lat, e.lng]} icon={facilityIcon}>
             <Popup>
-              <FacilityPopup facility={e} entities={entities} />
+              <FacilityPopup
+                facility={e}
+                entities={entities}
+                handlePin={handlePin}
+              />
             </Popup>
           </Marker>
         ))}

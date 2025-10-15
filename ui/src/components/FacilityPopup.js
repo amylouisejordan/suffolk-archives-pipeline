@@ -10,7 +10,7 @@ const labelColors = {
   DEFAULT: "#4b3f2f",
 };
 
-const FacilityPopup = ({ facility, entities }) => {
+const FacilityPopup = ({ facility, entities, handlePin }) => {
   return (
     <div
       style={{
@@ -27,6 +27,22 @@ const FacilityPopup = ({ facility, entities }) => {
       <h3 style={{ margin: 0, fontSize: "1.1rem", color: "#5c4b3b" }}>
         🏛️ <em>{facility.text}</em>
       </h3>
+      <button
+        onClick={() => handlePin(facility)}
+        style={{
+          marginTop: "0.5rem",
+          backgroundColor: "#c2b280",
+          border: "none",
+          padding: "0.4rem 0.8rem",
+          borderRadius: "4px",
+          fontWeight: "bold",
+          cursor: "pointer",
+          fontFamily: "Georgia, serif",
+          color: "#3e3e3e",
+        }}
+      >
+        📌 Pin this Facility
+      </button>
       <details style={{ marginTop: "0.75rem" }}>
         <summary
           style={{

@@ -9,24 +9,31 @@ const App = () => {
   const [entities, setEntities] = useState([]);
   const [facilityPins, setFacilityPins] = useState([]);
   const [error, setError] = useState(null);
+  const [pinnedFacilities, setPinnedFacilities] = useState([]);
 
   const geocodeEntity = async (name) => {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          name + " Suffolk UK"
-        )}`
-      );
-      const data = await res.json();
-      if (data.length > 0) {
-        return {
-          lat: parseFloat(data[0].lat),
-          lng: parseFloat(data[0].lon),
-        };
+    const queries = [`${name} Suffolk UK`, `${name} Suffolk`, `${name}`];
+
+    for (const q of queries) {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            q
+          )}`
+        );
+        const data = await res.json();
+        if (data.length > 0) {
+          return {
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+          };
+        }
+      } catch (err) {
+        console.error(`Geocoding failed for query "${q}":`, err);
       }
-    } catch (err) {
-      console.error("Geocoding failed:", err);
     }
+
+    console.warn(`No geocoding result for "${name}"`);
     return null;
   };
 
@@ -43,11 +50,22 @@ const App = () => {
           return coords ? { ...f, ...coords } : null;
         })
       );
+      console.log("Geocoded facilities:", geocoded);
+
       setFacilityPins(geocoded.filter(Boolean));
     } catch (err) {
       console.error("Annotation failed:", err);
-      setError("Annotation unsuccessful. Please ensure the archival engine is active.");
+      setError(
+        "Annotation unsuccessful. Please ensure the archival engine is active."
+      );
     }
+  };
+
+  const handlePin = (facility) => {
+    setPinnedFacilities((prev) => {
+      const alreadyPinned = prev.some((f) => f.text === facility.text);
+      return alreadyPinned ? prev : [...prev, facility];
+    });
   };
 
   return (
@@ -81,7 +99,44 @@ const App = () => {
         error={error}
       />
 
-      <FacilityMap facilityPins={facilityPins} entities={entities} />
+      <FacilityMap
+        facilityPins={facilityPins}
+        entities={entities}
+        handlePin={handlePin}
+      />
+
+      {pinnedFacilities.length > 0 && (
+        <section style={{ marginTop: "2rem" }}>
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              marginBottom: "1rem",
+              fontFamily: "Georgia, serif",
+              color: "#5c4b3b",
+            }}
+          >
+            📍 Pinned Facilities for Comparison
+          </h2>
+          <ul style={{ listStyle: "none", paddingLeft: 0 }}>
+            {pinnedFacilities.map((f, i) => (
+              <li
+                key={i}
+                style={{
+                  marginBottom: "0.5rem",
+                  backgroundColor: "#fffaf0",
+                  border: "1px solid #c2b280",
+                  padding: "0.75rem",
+                  borderRadius: "6px",
+                  fontFamily: "Georgia, serif",
+                  color: "#3e3e3e",
+                }}
+              >
+                <strong>{f.text}</strong> — {f.label}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <footer
         style={{
@@ -93,7 +148,8 @@ const App = () => {
           color: "#5c4b3b",
         }}
       >
-        “History is who we are and why we are the way we are.” - David McCullough
+        “History is who we are and why we are the way we are.” - David
+        McCullough
         <br />
         <span style={{ fontSize: "0.9rem" }}>
           Source: Suffolk Archives, Historical Records Collection
