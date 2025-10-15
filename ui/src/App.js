@@ -10,6 +10,7 @@ const App = () => {
   const [facilityPins, setFacilityPins] = useState([]);
   const [error, setError] = useState(null);
   const [pinnedFacilities, setPinnedFacilities] = useState([]);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const geocodeEntity = async (name) => {
     const queries = [`${name} Suffolk UK`, `${name} Suffolk`, `${name}`];
@@ -38,6 +39,7 @@ const App = () => {
   };
 
   const handleSubmit = async () => {
+    setHasSubmitted(true);
     try {
       const res = await axios.post("http://localhost:5050/annotate", { text });
       setEntities(res.data);
@@ -50,7 +52,6 @@ const App = () => {
           return coords ? { ...f, ...coords } : null;
         })
       );
-      console.log("Geocoded facilities:", geocoded);
 
       setFacilityPins(geocoded.filter(Boolean));
     } catch (err) {
@@ -104,6 +105,7 @@ const App = () => {
         entities={entities}
         handlePin={handlePin}
         pinnedFacilities={pinnedFacilities.filter((f) => f.visible)}
+        hasSubmitted={hasSubmitted}
       />
 
       <ul style={{ listStyle: "none", paddingLeft: 0 }}>

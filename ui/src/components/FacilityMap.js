@@ -15,14 +15,33 @@ const FacilityMap = ({
   entities,
   handlePin,
   pinnedFacilities,
+  hasSubmitted,
 }) => {
   const allPins = [...facilityPins, ...pinnedFacilities];
 
-  if (allPins.length === 0) {
+  if (hasSubmitted && allPins.length === 0) {
     return (
-      <p style={{ fontStyle: "italic", color: "#5c4b3b" }}>
-        No geocoded facilities found. Try a different passage or check spelling.
-      </p>
+      <div
+        style={{
+          backgroundColor: "#fff0e6",
+          border: "2px dashed #c2b280",
+          padding: "1.5rem",
+          borderRadius: "8px",
+          marginTop: "2rem",
+          textAlign: "center",
+          fontFamily: "Georgia, serif",
+          color: "#5c4b3b",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+        }}
+      >
+        <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
+          ⚠️ No Facilities Found
+        </h3>
+        <p style={{ fontSize: "1rem", margin: 0 }}>
+          We couldn’t geocode any facilities from this passage. Try a different
+          excerpt, check spelling, or use more specific place names.
+        </p>
+      </div>
     );
   }
 
