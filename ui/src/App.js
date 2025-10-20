@@ -110,6 +110,7 @@ const App = () => {
         setText={setText}
         handleSubmit={handleSubmit}
         error={error}
+        entities={entities}
       />
 
       {isLoading && (
