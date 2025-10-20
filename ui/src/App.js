@@ -11,6 +11,7 @@ const App = () => {
   const [error, setError] = useState(null);
   const [pinnedFacilities, setPinnedFacilities] = useState([]);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Attempts to geocode a facility name using (broad) queries
   const geocodeEntity = async (name) => {
@@ -41,11 +42,12 @@ const App = () => {
 
   // Handles submission of user text for annotation
   const handleSubmit = async () => {
-    setHasSubmitted(true);
+    setIsLoading(true);
     try {
       const res = await axios.post("http://localhost:5050/annotate", { text });
       setEntities(res.data);
       setError(null);
+      setHasSubmitted(true);
 
       // Filter for entities labeled as FACILITY
       const facilities = res.data.filter((e) => e.label === "FACILITY");
@@ -65,6 +67,9 @@ const App = () => {
       setError(
         "Annotation unsuccessful. Please ensure the archival engine is active."
       );
+      setHasSubmitted(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -107,6 +112,23 @@ const App = () => {
         error={error}
       />
 
+      {isLoading && (
+        <div
+          style={{
+            margin: "1rem 0",
+            padding: "1rem",
+            backgroundColor: "#fff0e6",
+            border: "1px dashed #c2b280",
+            borderRadius: "6px",
+            fontFamily: "Georgia, serif",
+            color: "#5c4b3b",
+            textAlign: "center",
+          }}
+        >
+          ⏳ Annotating passage and locating facilities…
+        </div>
+      )}
+
       <FacilityMap
         facilityPins={facilityPins}
         entities={entities}
@@ -114,6 +136,37 @@ const App = () => {
         pinnedFacilities={pinnedFacilities.filter((f) => f.visible)}
         hasSubmitted={hasSubmitted}
       />
+
+      {entities.length > 0 && (
+        <button
+          onClick={() => {
+            const csv = entities
+              .map((e) => `"${e.text}","${e.label}"`)
+              .join("\n");
+            const blob = new Blob([`Text,Label\n${csv}`], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "annotated_entities.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+          }}
+          style={{
+            backgroundColor: "#6b4226",
+            color: "#fdf6e3",
+            padding: "0.5rem 1rem",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "1rem",
+            fontFamily: "Georgia, serif",
+            marginBottom: "2rem",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          }}
+        >
+          📥 Export Entities as CSV
+        </button>
+      )}
 
       <ul style={{ listStyle: "none", paddingLeft: 0 }}>
         {pinnedFacilities.map((f, i) => (
