@@ -8,7 +8,7 @@
 
 This project was developed for my **Information Engineering module** at university. It implements a Named Entity Recognition (NER) pipeline to automatically identify historically significant references in digitised map and document collections from **Suffolk Archives**. The goal is to enrich metadata and improve public access to archival content through semantic analysis and geospatial mapping.
 
-## The system includes a user interface with space to upload historical excerpts, view annotated entities, and explore geocoded facilities on an interactive map.
+The system includes a user interface with space to upload historical excerpts, view annotated entities, and explore geocoded facilities on an interactive map.
 
 ## ⚙️ How It's Made
 
@@ -29,10 +29,9 @@ It achieved a **97–98% F-score** on real Suffolk map entries. The workflow sup
 
 The frontend complements this pipeline by offering:
 
-- A styled `TextInput` component for entering historical text
+- An input area for entering historical text
 - Real-time annotation via Axios and the trained model
-- A `FacilityMap` component that geocodes and displays recognized facilities using Leaflet
-- Accessible UI with modular React architecture and archival-themed design
+- A `FacilityMap` component that geocodes and displays recognised facilities using Leaflet
 
 ---
 
