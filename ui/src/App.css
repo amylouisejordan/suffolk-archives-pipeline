@@ -40,34 +40,35 @@
 }
 
 body {
-  background-color: #fdf6e3; /* parchment-like */
-  font-family: 'Georgia', serif;
+  background-color: #fdf6e3;
+  font-family: "Georgia", serif;
   color: #3e3e3e;
 }
 
 .App-header {
-  background-color: #7c6f64; /* muted brown */
+  background-color: #7c6f64;
   color: #fdf6e3;
 }
 
 button {
-  background-color: #6b4226; /* antique leather */
+  background-color: #6b4226;
   color: #fdf6e3;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
 textarea {
   background-color: #fffaf0;
   border: 1px solid #c2b280;
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
 }
 
-h1, h2 {
-  font-family: 'Georgia', serif;
+h1,
+h2 {
+  font-family: "Georgia", serif;
   color: #5c4b3b;
 }
 
 details summary {
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   color: #5c4b3b;
 }
