@@ -13,7 +13,7 @@ const App = () => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Attempts to geocode a facility name using (broad) queries
+  // attempts to geocode a facility name using (broad) queries
   const geocodeEntity = async (name) => {
     const queries = [`${name} Suffolk UK`, `${name} Suffolk`, `${name}`];
 
@@ -40,7 +40,7 @@ const App = () => {
     return null;
   };
 
-  // Handles submission of user text for annotation
+  // handle submission of user text for annotation
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
@@ -49,10 +49,10 @@ const App = () => {
       setError(null);
       setHasSubmitted(true);
 
-      // Filter for entities labeled as FACILITY
+      // pick out FACILITY entities
       const facilities = res.data.filter((e) => e.label === "FACILITY");
 
-      // Geocode each facility and attach coordinates
+      // geocode each facility and attach coordinates
       const geocoded = await Promise.all(
         facilities.map(async (f) => {
           const coords = await geocodeEntity(f.text);
@@ -60,7 +60,7 @@ const App = () => {
         })
       );
 
-      // Only keep successfully geocoded facilities
+      // only keep successfully geocoded facilities
       setFacilityPins(geocoded.filter(Boolean));
     } catch (err) {
       console.error("Annotation failed:", err);
@@ -73,7 +73,7 @@ const App = () => {
     }
   };
 
-  // Pins a facility if not already pinned
+  // be able to pin/unpin a facility
   const handlePin = (facility) => {
     setPinnedFacilities((prev) => {
       const alreadyPinned = prev.some((f) => f.text === facility.text);

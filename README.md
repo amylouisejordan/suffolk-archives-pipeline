@@ -30,7 +30,7 @@ The system includes a user interface for uploading historical excerpts, viewing 
    The `.jsonl` output is processed using `convert.py`, which:
 
    - Converts each example into spaCy’s binary format (`.spacy`)
-   - Splits the data into training and development sets
+   - Splits the data into training and development sets (80/20 split)
 
 3. **Model Training**  
    Using spaCy’s CLI and a custom `config.cfg`, the model is trained on `train.spacy` and evaluated on `dev.spacy`. This produces a pipeline in `model/model-best`.
