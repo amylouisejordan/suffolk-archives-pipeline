@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import EntityLegend from "./EntityLegend";
 
 const labelColors = {
   ORG: "#a67c52",
@@ -10,12 +12,13 @@ const labelColors = {
   DEFAULT: "#4b3f2f",
 };
 
-const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
+const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
   const [showAnnotated, setShowAnnotated] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
 
   const getAnnotatedText = () => {
     let annotated = text;
-    entities.forEach(({ text: entText, label, score }) => {
+    entities.forEach(({ text: entText, label }) => {
       const color = labelColors[label] || labelColors.DEFAULT;
       const tooltip = `${label}`;
       const span = `<span title="${tooltip}" style="
@@ -37,6 +40,24 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
 
   return (
     <>
+      {showAnnotated && entities.length > 0 && (
+        <div
+          dangerouslySetInnerHTML={{ __html: getAnnotatedText() }}
+          style={{
+            backgroundColor: "#fffaf0",
+            border: "1px solid #c2b280",
+            borderRadius: "6px",
+            padding: "1rem",
+            marginBottom: "1rem",
+            fontFamily: "Georgia, serif",
+            color: "#3e3e3e",
+            lineHeight: "1.6",
+          }}
+          role="region"
+          aria-label="Annotated passage"
+        />
+      )}
+
       <label
         htmlFor="text-input"
         style={{
@@ -56,14 +77,15 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
           onClick={() => setShowAnnotated((prev) => !prev)}
           style={{
             marginBottom: "1rem",
-            backgroundColor: "#c2b280",
+            background: "none",
             border: "none",
             padding: "0.4rem 0.8rem",
             borderRadius: "4px",
             fontWeight: "bold",
             cursor: "pointer",
             fontFamily: "Georgia, serif",
-            color: "#3e3e3e",
+            color: "#5c4b3b",
+            textDecoration: "underline",
           }}
           aria-label="Toggle annotated view"
         >
@@ -71,23 +93,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
         </button>
       )}
 
-      {showAnnotated && entities.length > 0 ? (
-        <div
-          role="region"
-          dangerouslySetInnerHTML={{ __html: getAnnotatedText() }}
-          style={{
-            backgroundColor: "#fffaf0",
-            border: "1px solid #c2b280",
-            borderRadius: "6px",
-            padding: "1rem",
-            marginBottom: "1rem",
-            fontFamily: "Georgia, serif",
-            color: "#3e3e3e",
-            lineHeight: "1.6",
-          }}
-          aria-label="Annotated passage"
-        />
-      ) : (
+      {!showAnnotated && (
         <textarea
           id="text-input"
           rows={6}
@@ -109,8 +115,12 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
         />
       )}
 
-      <button
+      <motion.button
         onClick={handleSubmit}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.3 }}
         style={{
           backgroundColor: "#6b4226",
           color: "#fdf6e3",
@@ -120,13 +130,59 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
           cursor: "pointer",
           fontSize: "1rem",
           fontFamily: "Georgia, serif",
-          marginBottom: "2rem",
+          marginBottom: "1rem",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         }}
         aria-label="Submit passage for annotation"
       >
         🪶 Annotate Historical Entities
-      </button>
+      </motion.button>
+
+      {entities.length > 0 && (
+        <>
+          <button
+            onClick={() => setShowLegend((prev) => !prev)}
+            style={{
+              background: "none",
+              border: "none",
+              padding: "0.4rem",
+              fontWeight: "bold",
+              cursor: "pointer",
+              fontFamily: "Georgia, serif",
+              color: "#5c4b3b",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "0.4rem",
+              margin: "0 auto 0.5rem",
+              fontSize: "1rem",
+            }}
+            aria-label="Toggle entity key"
+          >
+            🗂️ Key: Entity Types
+            <motion.span
+              style={{ display: "inline-block" }}
+              animate={{ rotate: showLegend ? 90 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              ➤
+            </motion.span>
+          </button>
+
+          <AnimatePresence>
+            {showLegend && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <EntityLegend />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
 
       {error && (
         <p
