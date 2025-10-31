@@ -11,6 +11,7 @@ import {
   faFileExport,
   faTimes,
   faQuestion,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 
 const HelpButton = styled.button`
@@ -61,6 +62,28 @@ const HelpButton = styled.button`
   }
 `;
 
+const ErrorNotice = ({ message }) =>
+  message ? (
+    <div
+      role="alert"
+      style={{
+        backgroundColor: "#f2dede",
+        border: "1px solid #ebccd1",
+        padding: "1rem",
+        borderRadius: "6px",
+        fontFamily: "Georgia, serif",
+        color: "#a94442",
+        margin: "1rem 0",
+        display: "flex",
+        alignItems: "center",
+        gap: "0.75rem",
+      }}
+    >
+      <FontAwesomeIcon icon={faExclamationTriangle} />
+      {message}
+    </div>
+  ) : null;
+
 const App = () => {
   const [text, setText] = useState("");
   const [entities, setEntities] = useState([]);
@@ -100,8 +123,14 @@ const App = () => {
 
   // handle submission of user text for annotation
   const handleSubmit = async () => {
+    if (!text.trim()) {
+      setError("Please enter a passage before submitting.");
+      return;
+    }
+
     setError(null);
     setIsLoading(true);
+    setHasSubmitted(false);
     try {
       const res = await axios.post("http://localhost:5050/annotate", { text });
       setEntities(res.data);
@@ -109,23 +138,33 @@ const App = () => {
 
       // pick out FACILITY entities
       const facilities = res.data.filter((e) => e.label === "FACILITY");
+      const failedGeocodes = [];
 
       // geocode each facility and attach coordinates
       const geocoded = await Promise.all(
         facilities.map(async (f) => {
           const coords = await geocodeEntity(f.text);
+          if (!coords) failedGeocodes.push(f.text);
           return coords ? { ...f, ...coords } : null;
         })
       );
 
       // only keep successfully geocoded facilities
       setFacilityPins(geocoded.filter(Boolean));
+      if (failedGeocodes.length > 0) {
+        console.warn("Failed to geocode:", failedGeocodes);
+      }
     } catch (err) {
       console.error("Annotation failed:", err);
-      setError(
-        "Annotation unsuccessful. Please ensure the archival engine is active."
-      );
-      setHasSubmitted(false);
+      if (err.response) {
+        setError(
+          "Server responded with an error. Please check your input or try again later."
+        );
+      } else if (err.request) {
+        setError("No response from server. Is the archival engine running?");
+      } else {
+        setError("Unexpected error occurred. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -190,6 +229,28 @@ const App = () => {
         >
           Annotating passage and locating facilities…
         </div>
+      )}
+
+      {!isLoading && error && (
+        <>
+          <ErrorNotice message={error} />
+          <button
+            onClick={handleSubmit}
+            style={{
+              backgroundColor: "#c2b280",
+              border: "none",
+              padding: "0.5rem 1rem",
+              borderRadius: "6px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              fontFamily: "Georgia, serif",
+              color: "#3e3e3e",
+              marginBottom: "1rem",
+            }}
+          >
+            Try Again
+          </button>
+        </>
       )}
 
       <FacilityMap
