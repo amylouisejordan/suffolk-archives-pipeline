@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const labelColors = {
   ORG: "#a67c52",
@@ -9,58 +10,54 @@ const labelColors = {
   FACILITY: "#9c6644",
 };
 
-const EntityLegend = () => {
+const labelDescriptions = {
+  ORG: "An organization or institution",
+  DATE: "A specific date or time reference",
+  GPE: "A geopolitical entity (e.g. city, country)",
+  PERSON: "A named individual",
+  EVENT: "A historical or named event",
+  FACILITY: "A named building or site",
+};
+
+const EntityLegend = ({ show }) => {
+  if (!show) return null;
+
   return (
-    <section
-      aria-label="Entity type legend"
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
       style={{
-        marginBottom: "1.5rem",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        gap: "0.5rem",
+        marginBottom: "1rem",
         fontFamily: "Georgia, serif",
-        textAlign: "center",
       }}
     >
-      <div
-        role="list"
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "0.5rem",
-        }}
-      >
-        {Object.entries(labelColors).map(([label, color]) => (
-          <span
-            key={label}
-            role="listitem"
-            aria-label={`Entity type ${label}`}
-            style={{
-              backgroundColor: color,
-              color: "#fdf6e3",
-              padding: "0.3rem 0.6rem",
-              borderRadius: "4px",
-              fontSize: "0.85rem",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              minWidth: "60px",
-              height: "28px",
-              textAlign: "center",
-              transition: "transform 0.2s ease",
-              cursor: "default",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "scale(1.05)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "scale(1)";
-            }}
-          >
-            {label}
-          </span>
-        ))}
-      </div>
-    </section>
+      {Object.entries(labelColors).map(([label, color], i) => (
+        <motion.span
+          key={label}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2, delay: i * 0.05 }}
+          title={labelDescriptions[label]}
+          style={{
+            backgroundColor: color,
+            color: "#fdf6e3",
+            padding: "0.3rem 0.6rem",
+            borderRadius: "4px",
+            fontSize: "0.85rem",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+            cursor: "help",
+          }}
+        >
+          {label}
+        </motion.span>
+      ))}
+    </motion.div>
   );
 };
 

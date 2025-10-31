@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import EntityLegend from "./EntityLegend";
 
@@ -12,15 +12,30 @@ const labelColors = {
   DEFAULT: "#4b3f2f",
 };
 
+const labelDescriptions = {
+  MAP: "The name of the map",
+  ORG: "An organisation or institution",
+  DATE: "A specific date or time reference",
+  GPE: "A geographical entity (e.g. city, country)",
+  PERSON: "A named individual",
+  EVENT: "A historical or named event",
+  FACILITY: "A named building or site",
+};
+
 const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
   const [showAnnotated, setShowAnnotated] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+
+  useEffect(() => {
+    const input = document.getElementById("text-input");
+    if (input) input.focus();
+  }, []);
 
   const getAnnotatedText = () => {
     let annotated = text;
     entities.forEach(({ text: entText, label }) => {
       const color = labelColors[label] || labelColors.DEFAULT;
-      const tooltip = `${label}`;
+      const tooltip = `${labelDescriptions[label] || label}`;
       const span = `<span title="${tooltip}" style="
         background-color:${color};
         color:#fdf6e3;
@@ -167,7 +182,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
             </motion.span>
           </button>
 
-          {showLegend && <EntityLegend />}
+          <EntityLegend show={showLegend} />
         </>
       )}
 
