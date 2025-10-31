@@ -42,6 +42,7 @@ const App = () => {
 
   // handle submission of user text for annotation
   const handleSubmit = async () => {
+    setError(null);
     setIsLoading(true);
     try {
       const res = await axios.post("http://localhost:5050/annotate", { text });
@@ -136,6 +137,7 @@ const App = () => {
         handlePin={handlePin}
         pinnedFacilities={pinnedFacilities.filter((f) => f.visible)}
         hasSubmitted={hasSubmitted}
+        isLoading={isLoading}
       />
 
       {entities.length > 0 && (

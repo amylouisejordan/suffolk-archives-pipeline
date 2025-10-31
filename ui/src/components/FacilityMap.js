@@ -75,13 +75,14 @@ const FacilityMap = ({
   handlePin,
   pinnedFacilities,
   hasSubmitted,
+  isLoading,
 }) => {
   const allPins = useMemo(
     () => [...facilityPins, ...pinnedFacilities],
     [facilityPins, pinnedFacilities]
   );
 
-  if (hasSubmitted && allPins.length === 0) {
+  if (hasSubmitted && !isLoading && allPins.length === 0) {
     return (
       <NoFacilitiesBox>
         <NoFacilitiesTitle>⚠️ No Facilities Found</NoFacilitiesTitle>
