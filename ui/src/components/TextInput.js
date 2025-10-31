@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import EntityLegend from "./EntityLegend";
 
 const labelColors = {
@@ -40,24 +40,6 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
 
   return (
     <>
-      {showAnnotated && entities.length > 0 && (
-        <div
-          dangerouslySetInnerHTML={{ __html: getAnnotatedText() }}
-          style={{
-            backgroundColor: "#fffaf0",
-            border: "1px solid #c2b280",
-            borderRadius: "6px",
-            padding: "1rem",
-            marginBottom: "1rem",
-            fontFamily: "Georgia, serif",
-            color: "#3e3e3e",
-            lineHeight: "1.6",
-          }}
-          role="region"
-          aria-label="Annotated passage"
-        />
-      )}
-
       <label
         htmlFor="text-input"
         style={{
@@ -77,15 +59,15 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
           onClick={() => setShowAnnotated((prev) => !prev)}
           style={{
             marginBottom: "1rem",
-            background: "none",
+            backgroundColor: "#c2b280",
             border: "none",
             padding: "0.4rem 0.8rem",
             borderRadius: "4px",
             fontWeight: "bold",
             cursor: "pointer",
             fontFamily: "Georgia, serif",
-            color: "#5c4b3b",
-            textDecoration: "underline",
+            color: "#3e3e3e",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
           }}
           aria-label="Toggle annotated view"
         >
@@ -93,27 +75,43 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
         </button>
       )}
 
-      {!showAnnotated && (
-        <textarea
-          id="text-input"
-          rows={6}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="e.g. Washington Colliery was active in 1845..."
-          style={{
-            width: "100%",
-            padding: "1rem",
-            fontSize: "1rem",
-            fontFamily: "Georgia, serif",
-            backgroundColor: "#fffaf0",
-            border: "1px solid #c2b280",
-            borderRadius: "6px",
-            marginBottom: "1rem",
-            color: "#3e3e3e",
-          }}
-          aria-label="Text input for historical passage"
-        />
-      )}
+      <div style={{ marginBottom: "1rem" }}>
+        {showAnnotated && entities.length > 0 ? (
+          <div
+            dangerouslySetInnerHTML={{ __html: getAnnotatedText() }}
+            style={{
+              backgroundColor: "#fffaf0",
+              border: "1px solid #c2b280",
+              borderRadius: "6px",
+              padding: "1rem",
+              fontFamily: "Georgia, serif",
+              color: "#3e3e3e",
+              lineHeight: "1.6",
+            }}
+            role="region"
+            aria-label="Annotated passage"
+          />
+        ) : (
+          <textarea
+            id="text-input"
+            rows={6}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="e.g. Washington Colliery was active in 1845..."
+            style={{
+              width: "100%",
+              padding: "1rem",
+              fontSize: "1rem",
+              fontFamily: "Georgia, serif",
+              backgroundColor: "#fffaf0",
+              border: "1px solid #c2b280",
+              borderRadius: "6px",
+              color: "#3e3e3e",
+            }}
+            aria-label="Text input for historical passage"
+          />
+        )}
+      </div>
 
       <motion.button
         onClick={handleSubmit}
@@ -169,18 +167,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
             </motion.span>
           </button>
 
-          <AnimatePresence>
-            {showLegend && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <EntityLegend />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {showLegend && <EntityLegend />}
         </>
       )}
 
