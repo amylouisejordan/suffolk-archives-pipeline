@@ -1,5 +1,13 @@
-import React from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import React, { useMemo, useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  ZoomControl,
+  ScaleControl,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import FacilityPopup from "./FacilityPopup";
 
@@ -10,6 +18,20 @@ const facilityIcon = new L.Icon({
   popupAnchor: [0, -36],
 });
 
+// make sure map zoom bounds to all pins
+const FitBoundsHandler = ({ pins }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (pins.length > 0) {
+      const bounds = L.latLngBounds(pins.map((p) => [p.lat, p.lng]));
+      map.fitBounds(bounds);
+    }
+  }, [pins, map]);
+
+  return null;
+};
+
 const FacilityMap = ({
   facilityPins,
   entities,
@@ -17,7 +39,10 @@ const FacilityMap = ({
   pinnedFacilities,
   hasSubmitted,
 }) => {
-  const allPins = [...facilityPins, ...pinnedFacilities];
+  const allPins = useMemo(
+    () => [...facilityPins, ...pinnedFacilities],
+    [facilityPins, pinnedFacilities]
+  );
 
   if (hasSubmitted && allPins.length === 0) {
     return (
@@ -67,13 +92,19 @@ const FacilityMap = ({
           border: "1px solid #c2b280",
           boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
         }}
+        zoomControl={false}
       >
         <TileLayer
           attribution="Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap."
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {allPins.map((e, i) => (
-          <Marker key={i} position={[e.lat, e.lng]} icon={facilityIcon}>
+        <FitBoundsHandler pins={allPins} />
+        {allPins.map((e) => (
+          <Marker
+            key={e.id || `${e.lat}-${e.lng}`}
+            position={[e.lat, e.lng]}
+            icon={facilityIcon}
+          >
             <Popup>
               <FacilityPopup
                 facility={e}
@@ -83,6 +114,8 @@ const FacilityMap = ({
             </Popup>
           </Marker>
         ))}
+        <ZoomControl position="topright" />
+        <ScaleControl position="bottomleft" />
       </MapContainer>
     </>
   );

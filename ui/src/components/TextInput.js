@@ -65,6 +65,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
             fontFamily: "Georgia, serif",
             color: "#3e3e3e",
           }}
+          aria-label="Toggle annotated view"
         >
           {showAnnotated ? "🔍 Show Raw Text" : "✨ Show Annotated Entities"}
         </button>
@@ -72,6 +73,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
 
       {showAnnotated && entities.length > 0 ? (
         <div
+          role="region"
           dangerouslySetInnerHTML={{ __html: getAnnotatedText() }}
           style={{
             backgroundColor: "#fffaf0",
@@ -83,6 +85,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
             color: "#3e3e3e",
             lineHeight: "1.6",
           }}
+          aria-label="Annotated passage"
         />
       ) : (
         <textarea
@@ -102,6 +105,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
             marginBottom: "1rem",
             color: "#3e3e3e",
           }}
+          aria-label="Text input for historical passage"
         />
       )}
 
@@ -119,6 +123,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities }) => {
           marginBottom: "2rem",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
         }}
+        aria-label="Submit passage for annotation"
       >
         🪶 Annotate Historical Entities
       </button>

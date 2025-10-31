@@ -40,6 +40,7 @@ const FacilityPopup = ({ facility, entities, handlePin }) => {
           fontFamily: "Georgia, serif",
           color: "#3e3e3e",
         }}
+        aria-label={`Pin facility ${facility?.text}`}
       >
         📌 Pin this Facility
       </button>
