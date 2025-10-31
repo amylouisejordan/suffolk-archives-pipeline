@@ -3,6 +3,56 @@ import axios from "axios";
 import "./App.css";
 import TextInput from "./components/TextInput";
 import FacilityMap from "./components/FacilityMap";
+import HelpOverlay from "./components/HelpOverlay";
+import styled from "styled-components";
+
+const HelpButton = styled.button`
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  background-color: #c2b280;
+  border: none;
+  padding: 0.65rem;
+  border-radius: 50%;
+  font-size: 1.3rem;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  color: #3e3e3e;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover,
+  &:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    background-color: #b8a06d;
+    outline: none;
+  }
+
+  &::after {
+    content: "Help";
+    position: absolute;
+    bottom: 120%;
+    right: 0;
+    background-color: #5c4b3b;
+    color: #fdf6e3;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+
+  &:hover::after,
+  &:focus::after {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 const App = () => {
   const [text, setText] = useState("");
@@ -12,6 +62,7 @@ const App = () => {
   const [pinnedFacilities, setPinnedFacilities] = useState([]);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   // attempts to geocode a facility name using (broad) queries
   const geocodeEntity = async (name) => {
@@ -47,7 +98,6 @@ const App = () => {
     try {
       const res = await axios.post("http://localhost:5050/annotate", { text });
       setEntities(res.data);
-      setError(null);
       setHasSubmitted(true);
 
       // pick out FACILITY entities
@@ -110,7 +160,7 @@ const App = () => {
         text={text}
         setText={setText}
         handleSubmit={handleSubmit}
-        error={error}
+        error={!isLoading ? error : null}
         entities={entities}
       />
 
@@ -242,6 +292,11 @@ const App = () => {
           Source: Suffolk Archives, Historical Records Collection
         </span>
       </footer>
+
+      <HelpButton onClick={() => setShowHelp(true)} aria-label="Open help">
+        ❓
+      </HelpButton>
+      {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
     </main>
   );
 };
