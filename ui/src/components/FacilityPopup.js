@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 const labelColors = {
   ORG: "#a67c52",
@@ -10,80 +11,101 @@ const labelColors = {
   DEFAULT: "#4b3f2f",
 };
 
+const PopupContainer = styled.div`
+  min-width: 250px;
+  max-width: 400px;
+  background-color: #fffaf0;
+  border: 1px solid #c2b280;
+  padding: 1rem;
+  border-radius: 6px;
+  font-family: Georgia, serif;
+  color: #3e3e3e;
+`;
+
+const Title = styled.h3`
+  margin: 0;
+  font-size: 1.1rem;
+  color: #5c4b3b;
+`;
+
+const PinButton = styled.button`
+  margin-top: 0.5rem;
+  background-color: #c2b280;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  color: #3e3e3e;
+`;
+
+const Details = styled.details`
+  margin-top: 0.75rem;
+`;
+
+const Summary = styled.summary`
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #6b4226;
+`;
+
+const EntityList = styled.ul`
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0.5rem;
+`;
+
+const EntityItem = styled.li`
+  margin-bottom: 0.4rem;
+`;
+
+const EntityLabel = styled.span`
+  background-color: ${({ $bg }) => $bg};
+  color: #fdf6e3;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: Georgia, serif;
+  margin-right: 0.5rem;
+  display: inline-block;
+  min-width: 60px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+`;
+
+const EntityText = styled.span`
+  font-size: 0.9rem;
+`;
+
 const FacilityPopup = ({ facility, entities, handlePin }) => {
   return (
-    <div
-      style={{
-        minWidth: "250px",
-        maxWidth: "400px",
-        backgroundColor: "#fffaf0",
-        border: "1px solid #c2b280",
-        padding: "1rem",
-        borderRadius: "6px",
-        fontFamily: "Georgia, serif",
-        color: "#3e3e3e",
-      }}
-    >
-      <h3 style={{ margin: 0, fontSize: "1.1rem", color: "#5c4b3b" }}>
+    <PopupContainer>
+      <Title>
         🏛️ <em>{facility.text}</em>
-      </h3>
-      <button
+      </Title>
+      <PinButton
         onClick={() => handlePin(facility)}
-        style={{
-          marginTop: "0.5rem",
-          backgroundColor: "#c2b280",
-          border: "none",
-          padding: "0.4rem 0.8rem",
-          borderRadius: "4px",
-          fontWeight: "bold",
-          cursor: "pointer",
-          fontFamily: "Georgia, serif",
-          color: "#3e3e3e",
-        }}
         aria-label={`Pin facility ${facility?.text}`}
       >
         📌 Pin this Facility
-      </button>
-      <details style={{ marginTop: "0.75rem" }}>
-        <summary
-          style={{
-            cursor: "pointer",
-            fontWeight: "bold",
-            fontSize: "0.95rem",
-            color: "#6b4226",
-          }}
-        >
-          Reveal associated entities
-        </summary>
-        <ul style={{ listStyle: "none", paddingLeft: 0, marginTop: "0.5rem" }}>
+      </PinButton>
+      <Details>
+        <Summary>Reveal associated entities</Summary>
+        <EntityList>
           {entities.map((ent, j) => {
             const color = labelColors[ent.label] || labelColors.DEFAULT;
             return (
-              <li key={j} style={{ marginBottom: "0.4rem" }}>
-                <span
-                  style={{
-                    backgroundColor: color,
-                    color: "#fdf6e3",
-                    padding: "0.25rem 0.6rem",
-                    borderRadius: "4px",
-                    fontSize: "0.8rem",
-                    fontFamily: "Georgia, serif",
-                    marginRight: "0.5rem",
-                    display: "inline-block",
-                    minWidth: "60px",
-                    textAlign: "center",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-                  }}
-                >
-                  {ent.label}
-                </span>
-                <span style={{ fontSize: "0.9rem" }}>{ent.text}</span>
-              </li>
+              <EntityItem key={j}>
+                <EntityLabel $bg={color}>{ent.label}</EntityLabel>
+                <EntityText>{ent.text}</EntityText>
+              </EntityItem>
             );
           })}
-        </ul>
-      </details>
-    </div>
+        </EntityList>
+      </Details>
+    </PopupContainer>
   );
 };
 

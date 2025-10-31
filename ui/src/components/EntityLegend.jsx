@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import styled from "styled-components";
 
 const labelColors = {
   ORG: "#a67c52",
@@ -19,45 +20,48 @@ const labelDescriptions = {
   FACILITY: "A named building or site",
 };
 
+const LegendContainer = styled(motion.div)`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-family: Georgia, serif;
+`;
+
+const Badge = styled(motion.span)`
+  background-color: ${({ $bg }) => $bg};
+  color: #fdf6e3;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  cursor: help;
+`;
+
 const EntityLegend = ({ show }) => {
   if (!show) return null;
 
   return (
-    <motion.div
+    <LegendContainer
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        gap: "0.5rem",
-        marginBottom: "1rem",
-        fontFamily: "Georgia, serif",
-      }}
     >
       {Object.entries(labelColors).map(([label, color], i) => (
-        <motion.span
+        <Badge
           key={label}
+          $bg={color}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.2, delay: i * 0.05 }}
           title={labelDescriptions[label]}
-          style={{
-            backgroundColor: color,
-            color: "#fdf6e3",
-            padding: "0.3rem 0.6rem",
-            borderRadius: "4px",
-            fontSize: "0.85rem",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-            cursor: "help",
-          }}
         >
           {label}
-        </motion.span>
+        </Badge>
       ))}
-    </motion.div>
+    </LegendContainer>
   );
 };
 

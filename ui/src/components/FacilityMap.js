@@ -9,6 +9,7 @@ import {
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
+import styled from "styled-components";
 import FacilityPopup from "./FacilityPopup";
 
 const facilityIcon = new L.Icon({
@@ -18,7 +19,6 @@ const facilityIcon = new L.Icon({
   popupAnchor: [0, -36],
 });
 
-// make sure map zoom bounds to all pins
 const FitBoundsHandler = ({ pins }) => {
   const map = useMap();
 
@@ -31,6 +31,43 @@ const FitBoundsHandler = ({ pins }) => {
 
   return null;
 };
+
+const MapHeading = styled.h2`
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-family: Georgia, serif;
+  color: #5c4b3b;
+`;
+
+const MapWrapper = styled(MapContainer)`
+  height: 600px;
+  margin-bottom: 2rem;
+  border-radius: 8px;
+  border: 1px solid #c2b280;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const NoFacilitiesBox = styled.div`
+  background-color: #fff0e6;
+  border: 2px dashed #c2b280;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  text-align: center;
+  font-family: Georgia, serif;
+  color: #5c4b3b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const NoFacilitiesTitle = styled.h3`
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+`;
+
+const NoFacilitiesText = styled.p`
+  font-size: 1rem;
+  margin: 0;
+`;
 
 const FacilityMap = ({
   facilityPins,
@@ -46,54 +83,20 @@ const FacilityMap = ({
 
   if (hasSubmitted && allPins.length === 0) {
     return (
-      <div
-        style={{
-          backgroundColor: "#fff0e6",
-          border: "2px dashed #c2b280",
-          padding: "1.5rem",
-          borderRadius: "8px",
-          marginTop: "2rem",
-          textAlign: "center",
-          fontFamily: "Georgia, serif",
-          color: "#5c4b3b",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h3 style={{ fontSize: "1.2rem", marginBottom: "0.5rem" }}>
-          ⚠️ No Facilities Found
-        </h3>
-        <p style={{ fontSize: "1rem", margin: 0 }}>
+      <NoFacilitiesBox>
+        <NoFacilitiesTitle>⚠️ No Facilities Found</NoFacilitiesTitle>
+        <NoFacilitiesText>
           We couldn’t geocode any facilities from this passage. Try a different
           excerpt, check spelling, or use more specific place names.
-        </p>
-      </div>
+        </NoFacilitiesText>
+      </NoFacilitiesBox>
     );
   }
 
   return (
     <>
-      <h2
-        style={{
-          fontSize: "1.5rem",
-          marginBottom: "1rem",
-          fontFamily: "Georgia, serif",
-          color: "#5c4b3b",
-        }}
-      >
-        🗺️ Geographical Registry of Notable Facilities
-      </h2>
-      <MapContainer
-        center={[52.245, 0.71]}
-        zoom={9}
-        style={{
-          height: "600px",
-          marginBottom: "2rem",
-          borderRadius: "8px",
-          border: "1px solid #c2b280",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        }}
-        zoomControl={false}
-      >
+      <MapHeading>🗺️ Geographical Registry of Notable Facilities</MapHeading>
+      <MapWrapper center={[52.245, 0.71]} zoom={9} zoomControl={false}>
         <TileLayer
           attribution="Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap."
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -116,7 +119,7 @@ const FacilityMap = ({
         ))}
         <ZoomControl position="topright" />
         <ScaleControl position="bottomleft" />
-      </MapContainer>
+      </MapWrapper>
     </>
   );
 };

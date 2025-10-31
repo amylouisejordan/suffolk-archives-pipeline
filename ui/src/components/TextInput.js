@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import styled from "styled-components";
 import EntityLegend from "./EntityLegend";
 
 const labelColors = {
@@ -21,6 +22,75 @@ const labelDescriptions = {
   EVENT: "A historical or named event",
   FACILITY: "A named building or site",
 };
+
+const Label = styled.label`
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-family: Georgia, serif;
+  color: #5c4b3b;
+  font-size: 1.1rem;
+`;
+
+const ToggleButton = styled.button`
+  margin-bottom: 1rem;
+  background-color: #c2b280;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  color: #3e3e3e;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 1rem;
+  font-size: 1rem;
+  font-family: Georgia, serif;
+  background-color: #fffaf0;
+  border: 1px solid #c2b280;
+  border-radius: 6px;
+  color: #3e3e3e;
+`;
+
+const AnnotatedBox = styled.div`
+  background-color: #fffaf0;
+  border: 1px solid #c2b280;
+  border-radius: 6px;
+  padding: 1rem;
+  font-family: Georgia, serif;
+  color: #3e3e3e;
+  line-height: 1.6;
+`;
+
+const LegendToggle = styled.button`
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: Georgia, serif;
+  color: #5c4b3b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 auto 0.5rem;
+  font-size: 1rem;
+`;
+
+const ErrorMessage = styled.p`
+  color: #a94442;
+  background-color: #f2dede;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-family: Georgia, serif;
+  font-size: 0.95rem;
+  border: 1px solid #ebccd1;
+`;
 
 const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
   const [showAnnotated, setShowAnnotated] = useState(false);
@@ -55,74 +125,33 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
 
   return (
     <>
-      <label
-        htmlFor="text-input"
-        style={{
-          fontWeight: "bold",
-          marginBottom: "0.5rem",
-          display: "block",
-          fontFamily: "Georgia, serif",
-          color: "#5c4b3b",
-          fontSize: "1.1rem",
-        }}
-      >
+      <Label htmlFor="text-input">
         ✍️ Enter a passage from the historical record:
-      </label>
+      </Label>
 
       {entities.length > 0 && (
-        <button
+        <ToggleButton
           onClick={() => setShowAnnotated((prev) => !prev)}
-          style={{
-            marginBottom: "1rem",
-            backgroundColor: "#c2b280",
-            border: "none",
-            padding: "0.4rem 0.8rem",
-            borderRadius: "4px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            fontFamily: "Georgia, serif",
-            color: "#3e3e3e",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
-          }}
           aria-label="Toggle annotated view"
         >
           {showAnnotated ? "🔍 Show Raw Text" : "✨ Show Annotated Entities"}
-        </button>
+        </ToggleButton>
       )}
 
       <div style={{ marginBottom: "1rem" }}>
         {showAnnotated && entities.length > 0 ? (
-          <div
+          <AnnotatedBox
             dangerouslySetInnerHTML={{ __html: getAnnotatedText() }}
-            style={{
-              backgroundColor: "#fffaf0",
-              border: "1px solid #c2b280",
-              borderRadius: "6px",
-              padding: "1rem",
-              fontFamily: "Georgia, serif",
-              color: "#3e3e3e",
-              lineHeight: "1.6",
-            }}
             role="region"
             aria-label="Annotated passage"
           />
         ) : (
-          <textarea
+          <TextArea
             id="text-input"
             rows={6}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="e.g. Washington Colliery was active in 1845..."
-            style={{
-              width: "100%",
-              padding: "1rem",
-              fontSize: "1rem",
-              fontFamily: "Georgia, serif",
-              backgroundColor: "#fffaf0",
-              border: "1px solid #c2b280",
-              borderRadius: "6px",
-              color: "#3e3e3e",
-            }}
             aria-label="Text input for historical passage"
           />
         )}
@@ -153,23 +182,8 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
 
       {entities.length > 0 && (
         <>
-          <button
+          <LegendToggle
             onClick={() => setShowLegend((prev) => !prev)}
-            style={{
-              background: "none",
-              border: "none",
-              padding: "0.4rem",
-              fontWeight: "bold",
-              cursor: "pointer",
-              fontFamily: "Georgia, serif",
-              color: "#5c4b3b",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "0.4rem",
-              margin: "0 auto 0.5rem",
-              fontSize: "1rem",
-            }}
             aria-label="Toggle entity key"
           >
             🗂️ Key: Entity Types
@@ -180,27 +194,13 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
             >
               ➤
             </motion.span>
-          </button>
+          </LegendToggle>
 
           <EntityLegend show={showLegend} />
         </>
       )}
 
-      {error && (
-        <p
-          style={{
-            color: "#a94442",
-            backgroundColor: "#f2dede",
-            padding: "0.5rem 1rem",
-            borderRadius: "4px",
-            fontFamily: "Georgia, serif",
-            fontSize: "0.95rem",
-            border: "1px solid #ebccd1",
-          }}
-        >
-          ⚠️ {error}
-        </p>
-      )}
+      {error && <ErrorMessage>⚠️ {error}</ErrorMessage>}
     </>
   );
 };
