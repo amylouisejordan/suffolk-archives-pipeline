@@ -26,7 +26,12 @@ const LegendContainer = styled(motion.div)`
   justify-content: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #fffaf0;
+  border: 1px solid #c2b280;
+  border-radius: 6px;
   font-family: Georgia, serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 `;
 
 const Badge = styled(motion.span)`
@@ -35,8 +40,15 @@ const Badge = styled(motion.span)`
   padding: 0.3rem 0.6rem;
   border-radius: 4px;
   font-size: 0.85rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-family: Georgia, serif;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
   cursor: help;
+  white-space: nowrap;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const EntityLegend = ({ show }) => {
@@ -48,6 +60,8 @@ const EntityLegend = ({ show }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
+      role="region"
+      aria-label="Entity legend"
     >
       {Object.entries(labelColors).map(([label, color], i) => (
         <Badge

@@ -1,5 +1,12 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFeatherAlt,
+  faLightbulb,
+  faTimes,
+  faScroll,
+} from "@fortawesome/free-solid-svg-icons";
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(10px); }
@@ -80,50 +87,61 @@ const Item = styled.li`
 const HelpOverlay = ({ onClose }) => (
   <Overlay role="dialog" aria-label="Help overlay">
     <CloseButton onClick={onClose} aria-label="Close help overlay">
-      ❌ Close
+      <FontAwesomeIcon icon={faTimes} />
     </CloseButton>
 
     <Content>
-      <Heading>🧭 Welcome to the Suffolk Archival Entity Explorer</Heading>
+      <Heading>
+        <FontAwesomeIcon icon={faScroll} style={{ marginRight: "0.5rem" }} />
+        Welcome to the Suffolk Archival Entity Explorer
+      </Heading>
 
       <Section>
-        <Subheading>📌 What You Can Do</Subheading>
+        <Subheading>
+          <FontAwesomeIcon icon={faFeatherAlt} />
+          How to Use This Explorer
+        </Subheading>
         <List>
           <Item>
-            <strong>Enter a passage:</strong> Paste or type a historical excerpt
-            into the text box.
+            <strong>Transcribe a passage:</strong> Paste or type a historical
+            excerpt into the text box.
           </Item>
           <Item>
-            <strong>Annotate:</strong> Click{" "}
-            <em>🪶 Annotate Historical Entities</em> to highlight names, dates,
+            <strong>Annotate:</strong>
+            <em>Annotate Historical Entities</em> to highlight names, dates,
             places, and facilities.
           </Item>
           <Item>
             <strong>Map:</strong> View geocoded facilities on the interactive
-            map. Pin and unpin locations to aid compaison.
+            map. Pin and unpin locations to aid comparison.
           </Item>
           <Item>
             <strong>Export:</strong> Download a CSV of all annotated entities
-            from the specific passaeg for archival or research use.
+            from the selected passage for archival or research use.
           </Item>
         </List>
       </Section>
 
       <Section>
-        <Subheading>💡 Tips for Better Results</Subheading>
+        <Subheading>
+          <FontAwesomeIcon icon={faLightbulb} />
+          Tips for Better Results
+        </Subheading>
         <List>
           <Item>
             Use specific place names (e.g. “Washington Colliery” instead of “the
-            mine”) for better geocoding.
+            mine”) for more accurate geocoding.
           </Item>
           <Item>
             Shorter passages with clear structure tend to produce cleaner
             annotations.
           </Item>
           <Item>
-            Toggle views to compare raw and annotated text for clarity.
+            Toggle between raw and annotated views to compare interpretations.
           </Item>
-          <Item>Use the entity key to understand what each label means.</Item>
+          <Item>
+            Use the entity key to understand each label’s meaning and purpose.
+          </Item>
         </List>
       </Section>
     </Content>

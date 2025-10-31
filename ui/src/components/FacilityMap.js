@@ -11,6 +11,11 @@ import {
 import L from "leaflet";
 import styled from "styled-components";
 import FacilityPopup from "./FacilityPopup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMapMarkedAlt,
+  faExclamationTriangle,
+} from "@fortawesome/free-solid-svg-icons";
 
 const facilityIcon = new L.Icon({
   iconUrl: process.env.PUBLIC_URL + "/assets/seal.png",
@@ -45,6 +50,7 @@ const MapWrapper = styled(MapContainer)`
   border-radius: 8px;
   border: 1px solid #c2b280;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: #fffaf0;
 `;
 
 const NoFacilitiesBox = styled.div`
@@ -62,6 +68,10 @@ const NoFacilitiesBox = styled.div`
 const NoFacilitiesTitle = styled.h3`
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 `;
 
 const NoFacilitiesText = styled.p`
@@ -85,10 +95,14 @@ const FacilityMap = ({
   if (hasSubmitted && !isLoading && allPins.length === 0) {
     return (
       <NoFacilitiesBox>
-        <NoFacilitiesTitle>⚠️ No Facilities Found</NoFacilitiesTitle>
+        <NoFacilitiesTitle>
+          <FontAwesomeIcon icon={faExclamationTriangle} />
+          No Facilities Found
+        </NoFacilitiesTitle>
         <NoFacilitiesText>
-          We couldn’t geocode any facilities from this passage. Try a different
-          excerpt, check spelling, or use more specific place names.
+          No geocoded facilities were identified in this excerpt. Consider
+          refining the passage, verifying spellings, or specifying named
+          locations for improved results.
         </NoFacilitiesText>
       </NoFacilitiesBox>
     );
@@ -96,7 +110,10 @@ const FacilityMap = ({
 
   return (
     <>
-      <MapHeading>🗺️ Geographical Registry of Notable Facilities</MapHeading>
+      <MapHeading>
+        <FontAwesomeIcon icon={faMapMarkedAlt} />
+        Geographical Registry of Notable Facilities
+      </MapHeading>
       <MapWrapper center={[52.245, 0.71]} zoom={9} zoomControl={false}>
         <TileLayer
           attribution="Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap."

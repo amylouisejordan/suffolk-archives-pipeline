@@ -5,6 +5,13 @@ import TextInput from "./components/TextInput";
 import FacilityMap from "./components/FacilityMap";
 import HelpOverlay from "./components/HelpOverlay";
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFeatherAlt,
+  faFileExport,
+  faTimes,
+  faQuestion,
+} from "@fortawesome/free-solid-svg-icons";
 
 const HelpButton = styled.button`
   position: fixed;
@@ -153,7 +160,11 @@ const App = () => {
           paddingBottom: "0.5rem",
         }}
       >
-        📜 Suffolk Archival Entity Explorer
+        <FontAwesomeIcon
+          icon={faFeatherAlt}
+          style={{ marginRight: "0.5rem" }}
+        />
+        Suffolk Archival Entity Explorer
       </h1>
 
       <TextInput
@@ -177,7 +188,7 @@ const App = () => {
             textAlign: "center",
           }}
         >
-          ⏳ Annotating passage and locating facilities…
+          Annotating passage and locating facilities…
         </div>
       )}
 
@@ -217,7 +228,11 @@ const App = () => {
             boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           }}
         >
-          📥 Export Entities as CSV
+          <FontAwesomeIcon
+            icon={faFileExport}
+            style={{ marginRight: "0.5rem" }}
+          />
+          Export Entities as CSV
         </button>
       )}
 
@@ -268,7 +283,11 @@ const App = () => {
                   color: "#3e3e3e",
                 }}
               >
-                ❌ Unpin
+                <FontAwesomeIcon
+                  icon={faTimes}
+                  style={{ marginRight: "0.3rem" }}
+                />
+                Unpin
               </button>
             </div>
           </li>
@@ -294,7 +313,7 @@ const App = () => {
       </footer>
 
       <HelpButton onClick={() => setShowHelp(true)} aria-label="Open help">
-        ❓
+        <FontAwesomeIcon icon={faQuestion} />
       </HelpButton>
       {showHelp && <HelpOverlay onClose={() => setShowHelp(false)} />}
     </main>

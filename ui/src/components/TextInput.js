@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import EntityLegend from "./EntityLegend";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPenNib,
+  faEye,
+  faFeatherAlt,
+  faFolderOpen,
+  faExclamationTriangle,
+} from "@fortawesome/free-solid-svg-icons";
 
 const labelColors = {
   ORG: "#a67c52",
@@ -43,6 +51,10 @@ const ToggleButton = styled.button`
   font-family: Georgia, serif;
   color: #3e3e3e;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #b8a06d;
+  }
 `;
 
 const TextArea = styled.textarea`
@@ -54,6 +66,7 @@ const TextArea = styled.textarea`
   border: 1px solid #c2b280;
   border-radius: 6px;
   color: #3e3e3e;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
 `;
 
 const AnnotatedBox = styled.div`
@@ -64,6 +77,7 @@ const AnnotatedBox = styled.div`
   font-family: Georgia, serif;
   color: #3e3e3e;
   line-height: 1.6;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 `;
 
 const LegendToggle = styled.button`
@@ -90,6 +104,9 @@ const ErrorMessage = styled.p`
   font-family: Georgia, serif;
   font-size: 0.95rem;
   border: 1px solid #ebccd1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 
 const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
@@ -115,7 +132,8 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
         font-size:0.95rem;
         margin:0 0.15rem;
         white-space:nowrap;
-        box-shadow:0 1px 2px rgba(0,0,0,0.1);
+        box-shadow:inset 0 -1px 0 rgba(0,0,0,0.2);
+        text-shadow:0 1px 0 rgba(0,0,0,0.05);
         cursor:help;
       ">${entText}</span>`;
       annotated = annotated.replace(entText, span);
@@ -126,7 +144,8 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
   return (
     <>
       <Label htmlFor="text-input">
-        ✍️ Enter a passage from the historical record:
+        <FontAwesomeIcon icon={faPenNib} />
+        Transcribe an excerpt from the archive:
       </Label>
 
       {entities.length > 0 && (
@@ -134,7 +153,10 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
           onClick={() => setShowAnnotated((prev) => !prev)}
           aria-label="Toggle annotated view"
         >
-          {showAnnotated ? "🔍 Show Raw Text" : "✨ Show Annotated Entities"}
+          <FontAwesomeIcon icon={faEye} />
+          {showAnnotated
+            ? "Return to Original Transcript"
+            : "Reveal Marked Entities"}
         </ToggleButton>
       )}
 
@@ -177,7 +199,8 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
         }}
         aria-label="Submit passage for annotation"
       >
-        🪶 Annotate Historical Entities
+        <FontAwesomeIcon icon={faFeatherAlt} />
+        Annotate Historical Entities
       </motion.button>
 
       {entities.length > 0 && (
@@ -186,7 +209,8 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
             onClick={() => setShowLegend((prev) => !prev)}
             aria-label="Toggle entity key"
           >
-            🗂️ Key: Entity Types
+            <FontAwesomeIcon icon={faFolderOpen} />
+            Entity Classification Key
             <motion.span
               style={{ display: "inline-block" }}
               animate={{ rotate: showLegend ? 90 : 0 }}
@@ -200,7 +224,12 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
         </>
       )}
 
-      {error && <ErrorMessage>⚠️ {error}</ErrorMessage>}
+      {error && (
+        <ErrorMessage>
+          <FontAwesomeIcon icon={faExclamationTriangle} />
+          {error}
+        </ErrorMessage>
+      )}
     </>
   );
 };

@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLandmark, faThumbtack } from "@fortawesome/free-solid-svg-icons";
 
 const labelColors = {
   ORG: "#a67c52",
@@ -20,6 +22,7 @@ const PopupContainer = styled.div`
   border-radius: 6px;
   font-family: Georgia, serif;
   color: #3e3e3e;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 `;
 
 const Title = styled.h3`
@@ -38,6 +41,14 @@ const PinButton = styled.button`
   cursor: pointer;
   font-family: Georgia, serif;
   color: #3e3e3e;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: #b8a06d;
+  }
 `;
 
 const Details = styled.details`
@@ -49,6 +60,7 @@ const Summary = styled.summary`
   font-weight: bold;
   font-size: 0.95rem;
   color: #6b4226;
+  font-family: Georgia, serif;
 `;
 
 const EntityList = styled.ul`
@@ -72,24 +84,27 @@ const EntityLabel = styled.span`
   display: inline-block;
   min-width: 60px;
   text-align: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 `;
 
 const EntityText = styled.span`
   font-size: 0.9rem;
+  font-family: Georgia, serif;
 `;
 
 const FacilityPopup = ({ facility, entities, handlePin }) => {
   return (
     <PopupContainer>
       <Title>
-        🏛️ <em>{facility.text}</em>
+        <FontAwesomeIcon icon={faLandmark} />
+        <em>{facility.text}</em>
       </Title>
       <PinButton
         onClick={() => handlePin(facility)}
-        aria-label={`Pin facility ${facility?.text}`}
+        aria-label={`Pin facility: ${facility?.text}`}
       >
-        📌 Pin this Facility
+        <FontAwesomeIcon icon={faThumbtack} />
+        Pin this Facility
       </PinButton>
       <Details>
         <Summary>Reveal associated entities</Summary>
