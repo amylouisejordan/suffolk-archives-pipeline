@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import EntityLegend from "./EntityLegend";
@@ -10,16 +10,7 @@ import {
   faFolderOpen,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
-
-const labelColors = {
-  ORG: "#a67c52",
-  DATE: "#6b4226",
-  GPE: "#7f674c",
-  PERSON: "#8b5e3c",
-  EVENT: "#5c4b3b",
-  FACILITY: "#9c6644",
-  DEFAULT: "#4b3f2f",
-};
+import { labelColors } from "./FacilityPopup";
 
 const labelDescriptions = {
   MAP: "The name of the map",
@@ -30,6 +21,35 @@ const labelDescriptions = {
   EVENT: "A historical or named event",
   FACILITY: "A named building or site",
 };
+
+const EntitySpan = styled(motion.span)`
+  background-color: ${(p) => p.$color};
+  color: #fdf6e3;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin: 0 0.15rem;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  position: relative;
+  cursor: help;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 2px;
+    width: 100%;
+    background: #fdf6e3;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+`;
 
 const Label = styled.label`
   font-weight: bold;
@@ -109,37 +129,76 @@ const ErrorMessage = styled.p`
   gap: 0.5rem;
 `;
 
+const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const annotateText = (text, entities) => {
+  let nodes = [text];
+
+  entities.forEach(({ text: entText, label }) => {
+    const color = labelColors[label] || labelColors.DEFAULT;
+    const tooltip = labelDescriptions[label] || label;
+    const regex = new RegExp(`\\b${escapeRegExp(entText)}\\b`, "gi");
+
+    nodes = nodes.flatMap((node) => {
+      if (typeof node !== "string") return node;
+
+      const parts = node.split(regex);
+
+      return parts.flatMap((part, index) =>
+        index === parts.length - 1
+          ? part
+          : [
+              part,
+              <EntitySpan
+                key={`${entText}-${index}-${label}`}
+                title={tooltip}
+                $color={color}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+              >
+                {entText}
+              </EntitySpan>,
+            ]
+      );
+    });
+  });
+
+  return nodes;
+};
+
 const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
   const [showAnnotated, setShowAnnotated] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    const input = document.getElementById("text-input");
-    if (input) input.focus();
+    inputRef.current?.focus();
   }, []);
 
-  const getAnnotatedText = () => {
-    let annotated = text;
-    entities.forEach(({ text: entText, label }) => {
-      const color = labelColors[label] || labelColors.DEFAULT;
-      const tooltip = `${labelDescriptions[label] || label}`;
-      const span = `<span title="${tooltip}" style="
-        background-color:${color};
-        color:#fdf6e3;
-        padding:0.2rem 0.5rem;
-        border-radius:4px;
-        font-family:Georgia,serif;
-        font-size:0.95rem;
-        margin:0 0.15rem;
-        white-space:nowrap;
-        box-shadow:inset 0 -1px 0 rgba(0,0,0,0.2);
-        text-shadow:0 1px 0 rgba(0,0,0,0.05);
-        cursor:help;
-      ">${entText}</span>`;
-      annotated = annotated.replace(entText, span);
-    });
-    return annotated;
-  };
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.ctrlKey && e.key === "Enter") {
+        handleSubmit();
+      }
+
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+        setShowAnnotated((prev) => !prev);
+      }
+
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "l") {
+        setShowLegend((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [handleSubmit]);
+
+  const annotatedNodes = useMemo(
+    () => annotateText(text, entities),
+    [text, entities]
+  );
 
   return (
     <>
@@ -151,7 +210,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
       {entities.length > 0 && (
         <ToggleButton
           onClick={() => setShowAnnotated((prev) => !prev)}
-          aria-label="Toggle annotated view"
+          aria-expanded={showAnnotated}
         >
           <FontAwesomeIcon icon={faEye} />
           {showAnnotated
@@ -162,14 +221,13 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
 
       <div style={{ marginBottom: "1rem" }}>
         {showAnnotated && entities.length > 0 ? (
-          <AnnotatedBox
-            dangerouslySetInnerHTML={{ __html: getAnnotatedText() }}
-            role="region"
-            aria-label="Annotated passage"
-          />
+          <AnnotatedBox role="region" aria-label="Annotated passage">
+            {annotatedNodes}
+          </AnnotatedBox>
         ) : (
           <TextArea
             id="text-input"
+            ref={inputRef}
             rows={6}
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -207,7 +265,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
         <>
           <LegendToggle
             onClick={() => setShowLegend((prev) => !prev)}
-            aria-label="Toggle entity key"
+            aria-expanded={showLegend}
           >
             <FontAwesomeIcon icon={faFolderOpen} />
             Entity Classification Key
@@ -225,7 +283,7 @@ const TextInput = ({ text, setText, handleSubmit, error, entities = [] }) => {
       )}
 
       {error && (
-        <ErrorMessage>
+        <ErrorMessage role="alert" aria-live="assertive">
           <FontAwesomeIcon icon={faExclamationTriangle} />
           {error}
         </ErrorMessage>
